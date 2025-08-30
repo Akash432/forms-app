@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "657307138087",
+    "project_id": "forms-app-a8432",
+    "storage_bucket": "forms-app-a8432.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657307138087:android:caa34318d88233b51cf602",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9myJWvmV5Czgh38fPOGeHhrKcRPWwBZw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

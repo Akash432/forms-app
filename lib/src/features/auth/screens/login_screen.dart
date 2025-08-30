@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/src/core/services/auth_service.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:myapp/src/core/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,19 +11,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _isLogin = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isLogin ? 'Login' : 'Sign Up'),
-      ),
+      appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -32,40 +30,42 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) => value!.isEmpty ? 'Please enter an email' : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
-                validator: (value) => value!.isEmpty ? 'Please enter a password' : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    if (_isLogin) {
-                      await authService.signInWithEmailAndPassword(
-                        _emailController.text,
-                        _passwordController.text,
-                      );
+                    final user = await authService.signInWithEmailAndPassword(
+                      _emailController.text,
+                      _passwordController.text,
+                    );
+                    if (user != null) {
+                      // The router will automatically redirect
                     } else {
-                      await authService.createUserWithEmailAndPassword(
-                        _emailController.text,
-                        _passwordController.text,
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Failed to sign in')),
                       );
                     }
                   }
                 },
-                child: Text(_isLogin ? 'Login' : 'Sign Up'),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _isLogin = !_isLogin;
-                  });
-                },
-                child: Text(_isLogin ? 'Create an account' : 'Have an account? Login'),
+                child: const Text('Login'),
               ),
             ],
           ),

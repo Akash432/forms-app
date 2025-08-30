@@ -1,40 +1,55 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:myapp/src/core/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore;
 
-  Stream<UserModel?> get user {
-    return _auth.authStateChanges().map(_userFromFirebase);
-  }
+  AuthService({
+    FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firestore,
+  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+        _firestore = firestore ?? FirebaseFirestore.instance;
 
-  UserModel? _userFromFirebase(User? user) {
-    if (user == null) {
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      final UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      // Handle specific Firebase auth errors
+      print('Failed to sign in: ${e.message}');
       return null;
     }
-    // This is a placeholder for checking admin status.
-    // In a real app, you'd have a 'users' collection in Firestore
-    // to store user roles.
-    return UserModel(uid: user.uid, email: user.email ?? '', isAdmin: user.email!.contains('admin'));
   }
 
-  Future<UserModel?> signInWithEmailAndPassword(String email, String password) async {
-    final credential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return _userFromFirebase(credential.user);
-  }
+  Future<User?> signUpWithEmailAndPassword(String email, String password, String role) async {
+    try {
+      final UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-  Future<UserModel?> createUserWithEmailAndPassword(String email, String password) async {
-    final credential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return _userFromFirebase(credential.user);
+      if (userCredential.user != null) {
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+          'email': email,
+          'role': role,
+        });
+        return userCredential.user;
+      }
+      return null;
+    } on FirebaseAuthException catch (e) {
+      // Handle specific Firebase auth errors
+      print('Failed to sign up: ${e.message}');
+      return null;
+    }
   }
 
   Future<void> signOut() async {
-    return await _auth.signOut();
+    await _firebaseAuth.signOut();
   }
+
+  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 }
