@@ -1,50 +1,39 @@
-# Project Blueprint: Forms App
+# Project Blueprint
 
 ## Overview
 
-This document outlines the plan, features, and design for the Forms App, a Flutter application for creating and managing forms.
+A Flutter application with a focus on a clean and modern user interface. This document outlines the design, features, and implementation plan.
 
-## Implemented Features
+## Current Goal: Login Screen UI (Revision 2)
 
-*   **Authentication:** User authentication using Firebase Auth with email and password.
-*   **Role-Based Routing:** Implemented role-based routing using `go_router` to direct users to the appropriate screens based on their role (admin or user).
-*   **Project Structure:** Set up a scalable project structure with separate directories for core services, features, and models.
-*   **Services:**
-    *   `AuthService`: Handles user authentication (sign in, sign up, sign out).
-    *   `FirestoreService`: Interacts with Cloud Firestore to manage user data and roles.
-*   **Screens:**
-    *   `LoginScreen`: Allows users to sign in.
-    *   `AdminDashboardScreen`: The main dashboard for admin users.
-    *   `AdminFormsScreen`: A screen for admins to manage forms.
-    *   `UserDashboardScreen`: The main dashboard for regular users.
-*   **Models:**
-    *   `UserModel`: Represents the user data model.
+Create a visually appealing and user-friendly login screen that is a pixel-perfect replica of the provided HTML and CSS design.
 
-## Current Plan
+### UI Implementation Plan (Based on Provided CSS)
 
-The current plan is to build a robust forms application with the following core functionalities:
+1.  **Dependencies**:
+    *   `google_fonts`: For the 'Inter' font family.
+    *   `flutter_svg`: To render the social media icons from network URLs.
 
-### 1.  **User Management:**
-    *   Admins can create new user accounts.
-    *   Admins can assign roles (admin or user) to users.
+2.  **File Structure**:
+    *   `lib/src/features/auth/screens/login_screen.dart`: The main login screen implementation.
+    *   `lib/main.dart`: The application entry point, updated to set the global font to 'Inter'.
 
-### 2.  **Form Creation:**
-    *   Admins can create dynamic forms with various field types (text, multiple choice, etc.).
-    *   Admins can publish and unpublish forms.
+3.  **Screen Structure (`login_screen.dart`)**:
+    *   **Root Widget**: `Scaffold` with a background color of `#F0F9FF`.
+    *   **Layout**: `SingleChildScrollView` to prevent overflow on smaller screens, containing a `Padding` widget inside a `Container` with a width of 360px for the main content.
+    *   **Header**: "Welcome to SO." text, styled with `GoogleFonts.inter`, font size 22, and bold (700).
+    *   **Social Login Section**:
+        *   A `Column` of three custom-styled buttons (`.social-btn`).
+        *   Each button will be a `SizedBox` containing an `ElevatedButton` to control the width.
+        *   Inside the button: A `Row` with an `SvgPicture.network` for the icon (Google, Apple, Facebook) and a `Text` widget.
+        *   Styles: White background, 1px solid #ddd border, 8px border radius.
+    *   **Divider**: A `Row` with a centered `Text` widget displaying "or by email" with color `#666`.
+    *   **Email/Password Form**:
+        *   `TextField` for "Email Address" styled to match `input` CSS (2px solid #ccc border, 8px radius).
+        *   `TextField` for "Password" inside a `Stack` or `Row` (`.password-container`) to position the visibility toggle icon (`👁`).
+    *   **Forgot Password Link**: A `TextButton` styled to match `.forgot` (right-aligned, color `#444`).
+    *   **Sign In Button**: An `ElevatedButton` styled to match `.btn` (background `#0A84FF`, white text, 14px padding, 8px radius). It will contain a `Row` with the text "Sign In" and an arrow icon (→).
+    *   **Sign Up Link**: A `Row` at the bottom with a `RichText` or two `Text` widgets to style the "Create an account" link to match `.footer a` (color `#0A84FF`, bold font weight).
 
-### 3.  **Form Submission:**
-    *   Users can view and submit forms assigned to them.
-    *   Users can view their past submissions.
-
-### 4.  **Results Analysis:**
-    *   Admins can view and analyze form submissions.
-    *   Admins can export submission data.
-
-## Design
-
-The application will follow Material Design 3 principles, with a clean and modern UI.
-
-*   **Color Scheme:** A color scheme based on `Colors.deepPurple` will be used for a consistent and professional look.
-*   **Typography:** The `google_fonts` package will be used to enhance the typography with the "Oswald" and "Roboto" fonts.
-*   **Layout:** The layout will be responsive and adapt to different screen sizes.
-
+4.  **Main Application (`main.dart`)**:
+    *   The `theme` property of the `MaterialApp` will be updated. The `fontFamily` will be set to `GoogleFonts.inter().fontFamily` to apply the 'Inter' font globally.

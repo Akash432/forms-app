@@ -5,7 +5,9 @@
             "args": [
                 "-y",
                 "firebase-tools@latest",
-                "experimental:mcp"
+                "experimental:mcp",
+                "--dir",
+                "/home/user/myapp"
             ]
         }
     }
